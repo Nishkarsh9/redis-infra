@@ -3,6 +3,7 @@ regions:
   - ap-south-1
 filters:
   tag:Role:
+    - Bastion-server
     - infra-server
   instance-state-name: running
 compose:
