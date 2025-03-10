@@ -6,6 +6,9 @@ filters:
     - Bastion-server
     - infra-server
   instance-state-name: running
+keyed_groups:
+  - key: tags.Role
+    prefix: ""  
 compose:
   ansible_host: public_ip_address
   ansible_host_private: private_ip_address
