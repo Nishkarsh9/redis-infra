@@ -59,38 +59,32 @@ resource "aws_security_group" "bastion_sg" {
 
 resource "aws_security_group" "redis_sg" {
   vpc_id = aws_vpc.main.id
+
+  # Ingress rule for Redis (port 6379)
   ingress {
     from_port   = 6379
     to_port     = 6379
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  # Ingress rule for SSH (port 22)
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  # Egress rule (allow all outbound traffic)
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
   tags = {
     Name = "redis-sg"
-  }
-}
-
-resource "aws_security_group" "alb_sg" {
-  vpc_id = aws_vpc.main.id
-  ingress {
-    from_port   = 6379
-    to_port     = 6379
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name = "alb-sg"
   }
 }
