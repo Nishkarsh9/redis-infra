@@ -1,0 +1,11 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    redis_version: "7.0.15"  
+    redis_bind_ip: "0.0.0.0" 
+    redis_password: nisk
+
+  roles:
+    - redis_role
+

@@ -1,0 +1,136 @@
+
+
+#  Install build dependencies on Ubuntu (Debian family)
+- name: Install build dependencies on Ubuntu
+  when: ansible_facts.os_family == "Debian"
+  apt:
+    name:
+      - build-essential
+      - wget
+      - tcl
+      - libjemalloc-dev
+      - libssl-dev
+      - pkg-config
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Update apt package cache
+  when: ansible_facts.os_family == "Debian"
+  apt:
+    update_cache: yes
+  become: true
+
+#  Install build dependencies on CentOS (RedHat family)
+- name: Install build dependencies on CentOS
+  when: ansible_facts.os_family == "RedHat"
+  yum:
+    name:
+      - gcc
+      - make
+      - wget
+    state: present
+  become: true
+
+#  Ensure the Redis installation directory exists
+- name: Ensure the Redis installation directory exists
+  file:
+    path: "{{ redis_install_dir }}"
+    state: directory
+  become: true    
+
+# Download Redis from the official Redis source
+- name: Download Redis from source (Debian or RedHat)
+  become: true
+  get_url:
+    url: "https://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+    dest: "/tmp/redis-{{ redis_version }}.tar.gz"
+
+- name: Debug redis version URL
+  debug:
+    msg: "Download URL: https://download.redis.io/releases/redis-{{ redis_version }}.tar.gz"
+      
+# Extract Redis source code
+- name: Extract Redis source code
+  become: true
+  unarchive:
+    src: "/tmp/redis-{{ redis_version }}.tar.gz"
+    dest: "{{ redis_install_dir }}"
+    remote_src: yes
+ 
+# Compile Redis from source
+- name: Compile Redis from source
+  become: true
+  command: make
+  args:
+    chdir: "{{ redis_install_dir }}/redis-{{ redis_version }}"
+ 
+# Install Redis binaries and redis-cli
+- name: Install Redis binaries and redis-cli
+  become: true
+  command: make install
+  args:
+    chdir: "{{ redis_install_dir }}/redis-{{ redis_version }}"
+  notify: restart redis
+
+- name: Ensure the /etc/redis directory exists
+  file:
+    path: /etc/redis
+    state: directory
+    mode: "0755"
+  become: true
+
+#  Create Redis config file from template
+- name: Copying conf file from extracted files using cp command
+  shell: |
+    sudo cp /opt/redis-{{ redis_version }}/redis.conf /etc/redis/
+    sed -i.bak 's/^supervised no$/supervised systemd/' {{ redis_config_file }} 
+    sed -i.bak 's/^dir \.\//dir \/var\/lib\/redis/' {{ redis_config_file }}
+
+  become: true
+
+#  Create Redis systemd service file
+- name: Create Redis systemd service file
+  become: true
+  template:
+    src: redis-server.service.j2
+    dest: /etc/systemd/system/redis-server.service
+    mode: '0775'
+ 
+- name: Create the redis system user and group
+  user:
+    name: redis
+    system: yes
+    create_home: no      
+
+#  Create /var/log/redis directory
+- name: Create /var/log/redis directory
+  file:
+    path: /var/log/redis
+    state: directory
+    owner: redis
+    group: redis
+    mode: '0770'
+  become: true
+
+- name: Create /var/lib/redis directory
+  file:
+    path: /var/lib/redis
+    state: directory
+    owner: redis
+    group: redis
+    mode: '0770'
+
+#  Reload systemd to recognize the new Redis service file
+- name: Reload systemd to recognize the new Redis service file
+  become: true
+  systemd:
+    daemon_reload: yes
+
+#  Enable Redis service to start on boot
+- name: Enable Redis service to start on boot
+  become: true
+  systemd:
+    name: redis-server
+    enabled: yes
+    state: started
