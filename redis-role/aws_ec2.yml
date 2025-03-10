@@ -2,9 +2,6 @@ plugin: amazon.aws.aws_ec2
 regions:
   - ap-south-1
 filters:
-  tag:Role:
-    - Bastion-server
-    - infra-server
   instance-state-name: running
 keyed_groups:
   - key: tags.Role
@@ -12,3 +9,5 @@ keyed_groups:
 compose:
   ansible_host: public_ip_address
   ansible_host_private: private_ip_address
+hostnames:
+  - tag:Name
