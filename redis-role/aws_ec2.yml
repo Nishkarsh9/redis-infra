@@ -3,7 +3,7 @@ regions:
   - ap-south-1
 filters:
   tag:Role:
-    - infra-servers
+    - infra-server
   instance-state-name: running
 compose:
   ansible_host: private_ip_address
