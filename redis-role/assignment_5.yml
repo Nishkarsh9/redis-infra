@@ -1,5 +1,7 @@
 ---
-- hosts: all
+- hosts:
+    - redis-server-0
+    - redis-server-1
   become: yes
   vars:
     redis_version: "7.0.15"  
