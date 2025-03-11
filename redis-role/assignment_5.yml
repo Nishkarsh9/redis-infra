@@ -1,11 +1,14 @@
 ---
-- hosts:
-    - "{{ ansible_host_private }}"
+- hosts: _infra_server
   become: yes
   vars:
     redis_version: "7.0.15"  
     redis_bind_ip: "0.0.0.0" 
     redis_password: nisk
+  tasks:
+    - name: Debug the ansible_host_private
+      debug:
+        msg: "ansible_host_private for this host is {{ ansible_host_private }}"
 
   roles:
     - redis_role
