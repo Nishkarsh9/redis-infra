@@ -1,7 +1,6 @@
 ---
 - hosts:
-    - redis-server-0
-    - redis-server-1
+    - _infra_server
   become: yes
   vars:
     redis_version: "7.0.15"  
