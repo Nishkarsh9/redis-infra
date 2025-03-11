@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ redis_private_ips.split(',') }}"
+- hosts: _infra_server
   become: yes
   vars:
     redis_version: "7.0.15"  
