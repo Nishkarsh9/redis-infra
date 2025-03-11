@@ -7,7 +7,7 @@ keyed_groups:
   - key: tags.Role
     prefix: ""  
 compose:
-  ansible_host: public_ip_address
+  ansible_host: private_ip_address
   ansible_host_private: private_ip_address
   ansible_ssh_common_args: >-
     -o ProxyCommand='ssh -W %h:%p -i $SSH_PRIVATE_KEY ubuntu@{{ public_ip_address }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
