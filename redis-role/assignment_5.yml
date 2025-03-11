@@ -1,6 +1,6 @@
 ---
 - hosts:
-    - _infra_server
+    - "{{ ansible_host_private }}"
   become: yes
   vars:
     redis_version: "7.0.15"  
