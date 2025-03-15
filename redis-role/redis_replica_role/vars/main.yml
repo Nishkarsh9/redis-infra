@@ -1,0 +1,15 @@
+---
+# vars file for replica_role
+
+
+
+
+# Default package manager and installation commands for Ubuntu
+ubuntu_package_manager: "apt"
+ubuntu_install_command: "sudo apt-get install -y redis-server"
+
+# Default package manager and installation commands for CentOS
+centos_package_manager: "yum"
+centos_install_command: "sudo yum install -y redis"
+redis_version: "5.0.14"
+

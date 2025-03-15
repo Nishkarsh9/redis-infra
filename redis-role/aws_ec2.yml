@@ -1,0 +1,11 @@
+plugin: amazon.aws.aws_ec2
+regions:
+  - ap-south-1
+filters:
+  instance-state-name: running
+keyed_groups:
+  - key: tags.Role
+    prefix: ""  
+compose:
+  redis_master_ip: "{{ hostvars[groups['_infra_server'][0]].private_ip_address }}"  
+  redis_replica_ip: "{{ hostvars[groups['_infra_server'][1]].private_ip_address }}"  

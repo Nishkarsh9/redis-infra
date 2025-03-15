@@ -1,0 +1,14 @@
+---
+- name: Configuring Redis master and replica
+  hosts: _infra_server
+  become: true
+  tasks:
+    - name: Setting up master server
+      include_role:
+        name: redis_master_role
+      when: hostvars[inventory_hostname]['tags']['Name'] == "redis-server-0"
+
+    - name: Setting up replica server
+      include_role:
+        name: redis_replica_role
+      when: hostvars[inventory_hostname]['tags']['Name'] == "redis-server-1"

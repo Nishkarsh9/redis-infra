@@ -1,0 +1,16 @@
+---
+# handlers file for replica_role
+
+
+
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: restart redis
+  systemd:
+    name: redis-server
+    state: restarted
+    enabled: true
+
