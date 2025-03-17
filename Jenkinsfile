@@ -174,9 +174,9 @@ pipeline {
         always {
             echo 'Pipeline execution completed.'
             slackSend (
-                teamDomain: 'redis-infra-demo', // Replace with your Slack team domain
-                tokenCredentialId: 'slack', // Replace with your Slack token credentials ID
-                channel: '#redis-infra-notification-demo', // Replace with your Slack channel
+                teamDomain: 'redis-infra-demo', 
+                tokenCredentialId: 'slack', 
+                channel: '#redis-infra-notification-demo', 
                 message: "Pipeline completed. Status: ${currentBuild.result}"
             )
             mail to: 'nishkarshkumar11@gmail.com', subject: "Jenkins Pipeline Status: ${currentBuild.result}", body: """
